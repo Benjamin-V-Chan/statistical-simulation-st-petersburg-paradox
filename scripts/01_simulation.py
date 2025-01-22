@@ -1,26 +1,35 @@
-# Pseudocode for 01_simulation.py
-# Purpose: Simulate the St. Petersburg game multiple times and save results.
+import random
+import csv
+import os
 
-# Import necessary libraries
-# Define a function to simulate one round of the St. Petersburg game:
-    # Initialize payout and number of flips
-    # Loop until heads is flipped:
-        # Double the payout
-        # Increment the flip count
-    # Return the payout
+def simulate_game():
+    """Simulates one round of the St. Petersburg game."""
+    payout = 1
+    flips = 0
+    while random.choice([True, False]):  # Flip until heads (True)
+        payout *= 2
+        flips += 1
+    return payout
 
-# Define a function to simulate multiple games:
-    # Accept the number of games as input
-    # Initialize a list to store results
-    # Loop for the number of games:
-        # Simulate a game and append the result to the list
-    # Return the list of payouts
+def simulate_multiple_games(num_games):
+    """Simulates multiple rounds of the St. Petersburg game."""
+    results = []
+    for _ in range(num_games):
+        results.append(simulate_game())
+    return results
 
-# Define a function to save results to a CSV file:
-    # Accept results and output path as inputs
-    # Write results to the file
+def save_results_to_csv(results, output_path):
+    """Saves simulation results to a CSV file."""
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Game", "Payout"])
+        for i, payout in enumerate(results, start=1):
+            writer.writerow([i, payout])
 
-# Main script logic:
-    # Set the number of simulations and output file path
-    # Simulate multiple games
-    # Save results to a CSV file
+if __name__ == "__main__":
+    NUM_SIMULATIONS = 10000
+    OUTPUT_FILE = "outputs/st_petersburg_simulation.csv"
+
+    results = simulate_multiple_games(NUM_SIMULATIONS)
+    save_results_to_csv(results, OUTPUT_FILE)
